@@ -23,8 +23,10 @@
 - (NSString *) clientToken;
 - (void) registerDefaults:(NSDictionary *)params;
 - (void) performActionWithType:(ENGAHitType)t hitTypeString:(NSString *)typestr params:(NSDictionary *)params;
+- (void) performActionWithType:(ENGAHitType)t hitTypeString:(NSString *)typestr params:(NSDictionary *)params synchronous:(BOOL)synchronous;
 - (void) pageView:(NSDictionary *)params;
 - (void) event:(NSDictionary *)params;
+- (void) event:(NSDictionary *)params synchronous:(BOOL)synchronous;
 - (void) appView:(NSDictionary *)params;
 - (void) transaction:(NSDictionary *)params;
 - (void) item:(NSDictionary *)params;

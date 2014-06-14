@@ -144,6 +144,11 @@
 
 - (void) performActionWithType:(ENGAHitType)t hitTypeString:(NSString *)typestr params:(NSDictionary *)params
 {
+    [self performActionWithType:t hitTypeString:typestr params:params synchronous:NO];
+}
+
+- (void)performActionWithType:(ENGAHitType)t hitTypeString:(NSString *)typestr params:(NSDictionary *)params synchronous:(BOOL)synchronous
+{
     NSMutableDictionary *paramsWithHitType = [NSMutableDictionary dictionaryWithDictionary:params];
     paramsWithHitType[@(kHitTypeKey)] = typestr;
     NSDictionary *rawParams = [self resolvedParams:paramsWithHitType];
@@ -153,12 +158,15 @@
         @(kReservedUserAgentKey): self.userAgent
     };
     op.requestHeaders = self.userHeaders;
+    if (synchronous) {
+        [op start];
+    } else {
 #ifdef ENGA_USER_PROVIDED_OPQUEUE
-    [self.opQueue addOperation:op];
+        [self.opQueue addOperation:op];
 #else
-    [[NSOperationQueue mainQueue] addOperation:op];
+        [[NSOperationQueue mainQueue] addOperation:op];
 #endif
-
+    }
 }
 
 - (void) pageView:(NSDictionary *)params
@@ -169,6 +177,11 @@
 - (void) event:(NSDictionary *)params
 {
     [self performActionWithType:kHitTypeEvent hitTypeString:@"event" params:params];
+}
+
+- (void) event:(NSDictionary *)params synchronous:(BOOL)synchronous
+{
+    [self performActionWithType:kHitTypeEvent hitTypeString:@"event" params:params synchronous:synchronous];
 }
 
 - (void) appView:(NSDictionary *)params
